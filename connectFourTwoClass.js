@@ -7,7 +7,7 @@ class ConnectView {
         this.boardSize = boardSize; //The printed board is X by X size, where X is the initial boardSide given by the user.
     }
 
-    //this method takes in data from the Model and prints it into the console. 
+    //This method takes in data from the Model and prints it into the console. 
     display = (data) => {
         const boardSizeStr = boardSize + "";
         let boardDisplayString = " " + this.addSpace("", boardSizeStr) + "| ";
@@ -30,7 +30,7 @@ class ConnectView {
         console.log(boardDisplayString);
     }
 
-    //this method adds padding to cells to keep row/column alignment when row/column heading numbers get to double or triple digits. 
+    //This method adds padding to cells to keep row/column alignment when row/column heading numbers get to double or triple digits. 
     addSpace = (current, target) => {
         while (current.length <= target.length) {
             current += " ";
@@ -135,8 +135,9 @@ class ConnectModel {
         this.state = "draw";
     }
 
+    //This method checks for various win conditions when a move has been made.
     isWin = () => {
-        //horizontal win
+        //Horizontal win
         let winCheck = 0;
         for (let i = 0; i < this.boardSize; i++) {
             for (let j = 0; j < this.boardSize; j++) {
@@ -150,7 +151,7 @@ class ConnectModel {
             winCheck = 0;
         }
 
-        //vertical win
+        //Vertical win
         for (let i = 0; i < this.boardSize; i++) {
             for (let j = 0; j < this.boardSize; j++) {
                 if (this.board[j][i] === this.player) {
@@ -163,7 +164,7 @@ class ConnectModel {
             winCheck = 0;
         }
 
-        //diagonal win 1
+        //Diagonal win 1
         let currX = 0;
         let currY = 0;
         let x = 0;
@@ -189,7 +190,7 @@ class ConnectModel {
             winCheck = 0;
         }
 
-        //diagonal win 2
+        //Diagonal win 2
         currX = 0;
         currY = this.boardSize - 1;
         x = 0;
@@ -216,7 +217,7 @@ class ConnectModel {
         }
     }
 
-    //this method checks whether a given coordinate pair is in bounds of the board. 
+    //This method checks whether a given coordinate pair is in bounds of the board. 
     isWithinBounds = (x, y) => x >=0 && x < this.boardSize && y >=0 && y < this.boardSize;
 
 }
