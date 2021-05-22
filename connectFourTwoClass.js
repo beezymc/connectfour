@@ -1,11 +1,13 @@
 const readline = require("readline");
 var rl = readline.createInterface(process.stdin, process.stdout);
 
+//The Connect Four View 
 class ConnectView {
     constructor (boardSize) {
-        this.boardSize = boardSize;
+        this.boardSize = boardSize; //The printed board is X by X size, where X is the initial boardSide given by the user.
     }
 
+    //this method takes in data from the Model and prints it into the console. 
     display = (data) => {
         const boardSizeStr = boardSize + "";
         let boardDisplayString = " " + this.addSpace("", boardSizeStr) + "| ";
@@ -21,7 +23,6 @@ class ConnectView {
         for (let i = 0; i < this.boardSize; i++) {
             boardDisplayString += this.addSpace(i + "", boardSizeStr) + "| ";
             for (let j = 0; j < this.boardSize; j++) {
-                //this needs to be printing model data;
                 boardDisplayString += this.addSpace(data.board[i][j], boardSizeStr) + "| ";
             }
             boardDisplayString += "\n" + dash + "\n ";
@@ -29,6 +30,7 @@ class ConnectView {
         console.log(boardDisplayString);
     }
 
+    //this method adds padding to cells to keep row/column alignment when row/column heading numbers get to double or triple digits. 
     addSpace = (current, target) => {
         while (current.length <= target.length) {
             current += " ";
@@ -36,8 +38,10 @@ class ConnectView {
         return current;
     }
 
+    //This method checks if the user-provided coordinate pair is within bounds
     isWithinBounds = (x, y) => x >=0 && x < this.boardSize && y >= 0 && y < this.boardSize;
 
+    //This method checks if a user input is valid; it expects an x,y coordinate and throws an error otherwise.
     validateInput = (position) => {
         const res = position.split(",");
         if (res.length !== 2) throw new Error("Please enter a valid input.");
@@ -45,9 +49,10 @@ class ConnectView {
         const x = res[1];
         if(isNaN(x) || isNaN(y)) throw new Error("Please enter a valid input.");
         if(!this.isWithinBounds(x, y)) throw new Error("Please enter a valid input.");
-        return {x, y};
+        return { x, y };
     }
 
+    //This is the Connect Four run method, which runs recursively until either a 'win' or 'draw' condition is hit (as determined by the model).
     run = () => {
         rl.question('Please place your move in a space: ', (position) => {
             try {
@@ -70,14 +75,16 @@ class ConnectView {
     }
 };
 
+//The Minesweeper Model
 class ConnectModel {
     constructor (boardSize) {
-        this.boardSize = boardSize;
+        this.boardSize = boardSize; //The model board is X by X size, where X is the initial boardSide given by the user. This should match the view.
         this.state = "ongoing"; //draw, win
         this.board = this.createBoard();
-        this.player = "X";
+        this.player = "X"; //This value keeps track of which player is active ('X' or 'O')
     }
 
+    //This method generates the Model for the game board, which is stored in a 2-D array.
     createBoard = () => {
         let board = new Array(this.boardSize);
         for (let i = 0; i < this.boardSize; i++) {
@@ -89,17 +96,17 @@ class ConnectModel {
         return board;
     }
 
+    //This method checks if a move was valid (if the given coordinate pair wasn't already filled).
     validMove = (x, y) => this.board[x][y] === " ";
 
+    //This method takes in the user's coordinate pair given in the View, 
+    //and returns the current board and game state to the View if the input was valid, and once the Model has been updated.
     playerMove = (x, y) => {
         if(!this.validMove(x, y)) return null;
         this.board[x][y] = this.player;
         this.isWin();
         this.isDraw();
         if (this.state !== "win") this.changePlayer();
-        console.log(this.board);
-        console.log(this.player);
-        console.log(this.state);
         return {
             board: this.board,
             player: this.player,
@@ -107,6 +114,7 @@ class ConnectModel {
         }
     }
 
+    //This method changes the active player.
     changePlayer = () => {
         if (this.player === "X") {
             this.player = "O";
@@ -115,6 +123,7 @@ class ConnectModel {
         }
     }
 
+    //This method checks for the draw condition (if all cells are filled and no winner is found).
     isDraw = () => {
         for (let i = 0; i < this.boardSize; i++) {
             for (let j = 0; j < this.boardSize; j++) {
@@ -207,10 +216,12 @@ class ConnectModel {
         }
     }
 
+    //this method checks whether a given coordinate pair is in bounds of the board. 
     isWithinBounds = (x, y) => x >=0 && x < this.boardSize && y >=0 && y < this.boardSize;
 
 }
 
+//Initial values; can be changed here if desired. Note that boardSide must be below a certain value (depending on user display) to display properly.
 const boardSize = 5;
 
 let view = new ConnectView(boardSize);
